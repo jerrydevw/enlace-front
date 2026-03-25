@@ -31,8 +31,19 @@ async function apiFetch<T>(
   const { token: _token, ...restOptions } = options ?? {};
   void _token;
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (!apiUrl) {
+    throw new Error("NEXT_PUBLIC_API_URL is not defined");
+  }
+
+  // Use relative path for client-side to avoid Mixed Content (next.config.js proxy)
+  // Use full URL for server-side (Server Components)
+  const isServer = typeof window === "undefined";
+  const baseUrl = isServer ? apiUrl : "";
+  const requestPath = isServer ? path : path.replace(/^\/api\//, "/api-proxy/");
+
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}${path}`,
+    `${baseUrl}${requestPath}`,
     { ...restOptions, headers }
   );
 

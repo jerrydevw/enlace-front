@@ -9,7 +9,13 @@ interface Props {
 
 export default function WatchError({ error, reset }: Props) {
   useEffect(() => {
-    console.error("[Enlace] Watch error:", error);
+    // eslint-disable-next-line no-console
+    console.error("[Enlace] Watch error details:", {
+      message: error.message,
+      digest: error.digest,
+      stack: error.stack,
+      error
+    });
   }, [error]);
 
   return (
